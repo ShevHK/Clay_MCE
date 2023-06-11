@@ -719,13 +719,23 @@ class MyPanel(wx.Panel):
         for i in range(na_val * nb_val):
             all_el = len(elements) - 1
             ZP.append(self.ZP_Chose(elements[all_el - i], 6, 2))
-        # ZP.append(self.ZP_Chose(elements[3], 6, 2))
-
         for i in range(len(NT) - len(ZP)):
             FE.append(np.zeros(60).tolist())
 
         for i in ZP:
             FE.append(self.FE_Calc([c_1, c_2, c_3], P, i))
+
+        # preasure = [13]
+        # for i in preasure:
+        #    ZP.append(self.ZP_Chose(elements[i], 6, 2))
+        #
+        # zp_index = 0
+        # for i in range(len(elements)):
+        #    if i in preasure:
+        #        FE.append(self.FE_Calc([c_1, c_2, c_3], P, ZP[zp_index]))
+        #        zp_index += 1
+        #    else:
+        #        FE.append(np.zeros(60).tolist())
 
         MG = self.MG_Create(list_of_MGE, len(AKT), NT, ZU)
 

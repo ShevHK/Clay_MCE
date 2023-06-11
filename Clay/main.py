@@ -25,7 +25,7 @@ class MyPanel(wx.Panel):
         self.P_entry = wx.TextCtrl(self)
 
         # Створення кнопки "Додати"
-        self.all_points_button = wx.Button(self, label="Загальний графік")
+        self.all_points_button = wx.Button(self, label="Calculate")
         self.all_points_button.Bind(wx.EVT_BUTTON, self.on_all_points_button)
 
         # Розташування елементів на панелі
@@ -629,6 +629,30 @@ class MyPanel(wx.Panel):
         return result
 
     def on_all_points_button(self, event):
+        elements = []
+        AKT = []
+        NT = []
+        # навантаження закріплених
+        ZU = []
+        # навантажений елемент
+        ZP = []
+        DFIABG = []
+        DFIXYZ = []
+        DJ = []
+        FE = []
+        F = []
+        MG = []
+        c_1 = 5 / 9
+        c_2 = 8 / 9
+        c_3 = 5 / 9
+
+        E = 0
+        nu = 0
+        P = 0
+
+        liambda = 0
+        mu = 0
+
         # Отримання значень з полів введення
         a_val = float(self.a_entry.GetValue())
         b_val = float(self.b_entry.GetValue())
@@ -639,7 +663,6 @@ class MyPanel(wx.Panel):
         E = float(self.E_entry.GetValue())
         nu = float(self.nu_entry.GetValue())
         P = float(self.P_entry.GetValue())
-
         # a_val = 3
         # b_val = 2
         # c_val = 3
@@ -692,7 +715,10 @@ class MyPanel(wx.Panel):
             if i[2] == 0:
                 ZU.append(i)
 
-        ZP.append(self.ZP_Chose(elements[2], 6, 2))
+        # ОБИРАННЯ СТОРОНИ НАТИСКУ
+        for i in range(na_val * nb_val):
+            all_el = len(elements) - 1
+            ZP.append(self.ZP_Chose(elements[all_el - i], 6, 2))
         # ZP.append(self.ZP_Chose(elements[3], 6, 2))
 
         for i in range(len(NT) - len(ZP)):
@@ -725,20 +751,94 @@ class MyPanel(wx.Panel):
         # Встановлюємо пропорції осей
         self.ax.set_box_aspect([a_val, b_val, c_val])
 
+        for element in range(len(elements)):
+            nt_for_el = NT[element]
+            self.ax.plot([x_points[nt_for_el[0]], x_points[nt_for_el[8]]],
+                         [y_points[nt_for_el[0]], y_points[nt_for_el[8]]],
+                         [z_points[nt_for_el[0]], z_points[nt_for_el[8]]], c='b')
+            self.ax.plot([x_points[nt_for_el[0]], x_points[nt_for_el[11]]],
+                         [y_points[nt_for_el[0]], y_points[nt_for_el[11]]],
+                         [z_points[nt_for_el[0]], z_points[nt_for_el[11]]], c='b')
+            self.ax.plot([x_points[nt_for_el[0]], x_points[nt_for_el[12]]],
+                         [y_points[nt_for_el[0]], y_points[nt_for_el[12]]],
+                         [z_points[nt_for_el[0]], z_points[nt_for_el[12]]], c='b')
+            self.ax.plot([x_points[nt_for_el[1]], x_points[nt_for_el[8]]],
+                         [y_points[nt_for_el[1]], y_points[nt_for_el[8]]],
+                         [z_points[nt_for_el[1]], z_points[nt_for_el[8]]], c='b')
+            self.ax.plot([x_points[nt_for_el[1]], x_points[nt_for_el[9]]],
+                         [y_points[nt_for_el[1]], y_points[nt_for_el[9]]],
+                         [z_points[nt_for_el[1]], z_points[nt_for_el[9]]], c='b')
+            self.ax.plot([x_points[nt_for_el[1]], x_points[nt_for_el[13]]],
+                         [y_points[nt_for_el[1]], y_points[nt_for_el[13]]],
+                         [z_points[nt_for_el[1]], z_points[nt_for_el[13]]], c='b')
+            self.ax.plot([x_points[nt_for_el[2]], x_points[nt_for_el[9]]],
+                         [y_points[nt_for_el[2]], y_points[nt_for_el[9]]],
+                         [z_points[nt_for_el[2]], z_points[nt_for_el[9]]], c='b')
+            self.ax.plot([x_points[nt_for_el[2]], x_points[nt_for_el[10]]],
+                         [y_points[nt_for_el[2]], y_points[nt_for_el[10]]],
+                         [z_points[nt_for_el[2]], z_points[nt_for_el[10]]], c='b')
+            self.ax.plot([x_points[nt_for_el[2]], x_points[nt_for_el[14]]],
+                         [y_points[nt_for_el[2]], y_points[nt_for_el[14]]],
+                         [z_points[nt_for_el[2]], z_points[nt_for_el[14]]], c='b')
+            self.ax.plot([x_points[nt_for_el[3]], x_points[nt_for_el[11]]],
+                         [y_points[nt_for_el[3]], y_points[nt_for_el[11]]],
+                         [z_points[nt_for_el[3]], z_points[nt_for_el[11]]], c='b')
+            self.ax.plot([x_points[nt_for_el[3]], x_points[nt_for_el[10]]],
+                         [y_points[nt_for_el[3]], y_points[nt_for_el[10]]],
+                         [z_points[nt_for_el[3]], z_points[nt_for_el[10]]], c='b')
+            self.ax.plot([x_points[nt_for_el[3]], x_points[nt_for_el[15]]],
+                         [y_points[nt_for_el[3]], y_points[nt_for_el[15]]],
+                         [z_points[nt_for_el[3]], z_points[nt_for_el[15]]], c='b')
+            self.ax.plot([x_points[nt_for_el[4]], x_points[nt_for_el[16]]],
+                         [y_points[nt_for_el[4]], y_points[nt_for_el[16]]],
+                         [z_points[nt_for_el[4]], z_points[nt_for_el[16]]], c='b')
+            self.ax.plot([x_points[nt_for_el[4]], x_points[nt_for_el[19]]],
+                         [y_points[nt_for_el[4]], y_points[nt_for_el[19]]],
+                         [z_points[nt_for_el[4]], z_points[nt_for_el[19]]], c='b')
+            self.ax.plot([x_points[nt_for_el[4]], x_points[nt_for_el[12]]],
+                         [y_points[nt_for_el[4]], y_points[nt_for_el[12]]],
+                         [z_points[nt_for_el[4]], z_points[nt_for_el[12]]], c='b')
+            self.ax.plot([x_points[nt_for_el[5]], x_points[nt_for_el[16]]],
+                         [y_points[nt_for_el[5]], y_points[nt_for_el[16]]],
+                         [z_points[nt_for_el[5]], z_points[nt_for_el[16]]], c='b')
+            self.ax.plot([x_points[nt_for_el[5]], x_points[nt_for_el[17]]],
+                         [y_points[nt_for_el[5]], y_points[nt_for_el[17]]],
+                         [z_points[nt_for_el[5]], z_points[nt_for_el[17]]], c='b')
+            self.ax.plot([x_points[nt_for_el[5]], x_points[nt_for_el[13]]],
+                         [y_points[nt_for_el[5]], y_points[nt_for_el[13]]],
+                         [z_points[nt_for_el[5]], z_points[nt_for_el[13]]], c='b')
+            self.ax.plot([x_points[nt_for_el[6]], x_points[nt_for_el[17]]],
+                         [y_points[nt_for_el[6]], y_points[nt_for_el[17]]],
+                         [z_points[nt_for_el[6]], z_points[nt_for_el[17]]], c='b')
+            self.ax.plot([x_points[nt_for_el[6]], x_points[nt_for_el[18]]],
+                         [y_points[nt_for_el[6]], y_points[nt_for_el[18]]],
+                         [z_points[nt_for_el[6]], z_points[nt_for_el[18]]], c='b')
+            self.ax.plot([x_points[nt_for_el[6]], x_points[nt_for_el[14]]],
+                         [y_points[nt_for_el[6]], y_points[nt_for_el[14]]],
+                         [z_points[nt_for_el[6]], z_points[nt_for_el[14]]], c='b')
+            self.ax.plot([x_points[nt_for_el[7]], x_points[nt_for_el[18]]],
+                         [y_points[nt_for_el[7]], y_points[nt_for_el[18]]],
+                         [z_points[nt_for_el[7]], z_points[nt_for_el[18]]], c='b')
+            self.ax.plot([x_points[nt_for_el[7]], x_points[nt_for_el[19]]],
+                         [y_points[nt_for_el[7]], y_points[nt_for_el[19]]],
+                         [z_points[nt_for_el[7]], z_points[nt_for_el[19]]], c='b')
+            self.ax.plot([x_points[nt_for_el[7]], x_points[nt_for_el[15]]],
+                         [y_points[nt_for_el[7]], y_points[nt_for_el[15]]],
+                         [z_points[nt_for_el[7]], z_points[nt_for_el[15]]], c='b')
+
         self.fig.canvas.draw()
 
         # Оновлення відображення графіку
-        for i in result_points:
-            index_of_point = result_points.index(i)
-            j = index_of_point // 3
-            if (index_of_point + 1) % 3 == 1:
-                x_points_modified[j] = x_points[j] + i
+        for i in range(len(result_points)):
+            j = i // 3
+            if (i + 1) % 3 == 1:
+                x_points_modified[j] = x_points[j] + result_points[i]
                 j += 1
-            if (index_of_point + 1) % 3 == 2:
-                y_points_modified[j] = y_points[j] + i
+            if (i + 1) % 3 == 2:
+                y_points_modified[j] = y_points[j] + result_points[i]
                 j += 1
-            if (index_of_point + 1) % 3 == 0:
-                z_points_modified[j] = z_points[j] + i
+            if (i + 1) % 3 == 0:
+                z_points_modified[j] = z_points[j] + result_points[i]
                 j += 1
 
         self.fig = plt.figure()
@@ -747,6 +847,81 @@ class MyPanel(wx.Panel):
         self.ax.set_ylabel('Y')
         self.ax.set_zlabel('Z')
         self.ax.scatter(x_points_modified, y_points_modified, z_points_modified, c='g', marker='o')
+
+        for element in range(len(elements)):
+            nt_for_el = NT[element]
+            self.ax.plot([x_points_modified[nt_for_el[0]], x_points_modified[nt_for_el[8]]],
+                         [y_points_modified[nt_for_el[0]], y_points_modified[nt_for_el[8]]],
+                         [z_points_modified[nt_for_el[0]], z_points_modified[nt_for_el[8]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[0]], x_points_modified[nt_for_el[11]]],
+                         [y_points_modified[nt_for_el[0]], y_points_modified[nt_for_el[11]]],
+                         [z_points_modified[nt_for_el[0]], z_points_modified[nt_for_el[11]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[0]], x_points_modified[nt_for_el[12]]],
+                         [y_points_modified[nt_for_el[0]], y_points_modified[nt_for_el[12]]],
+                         [z_points_modified[nt_for_el[0]], z_points_modified[nt_for_el[12]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[1]], x_points_modified[nt_for_el[8]]],
+                         [y_points_modified[nt_for_el[1]], y_points_modified[nt_for_el[8]]],
+                         [z_points_modified[nt_for_el[1]], z_points_modified[nt_for_el[8]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[1]], x_points_modified[nt_for_el[9]]],
+                         [y_points_modified[nt_for_el[1]], y_points_modified[nt_for_el[9]]],
+                         [z_points_modified[nt_for_el[1]], z_points_modified[nt_for_el[9]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[1]], x_points_modified[nt_for_el[13]]],
+                         [y_points_modified[nt_for_el[1]], y_points_modified[nt_for_el[13]]],
+                         [z_points_modified[nt_for_el[1]], z_points_modified[nt_for_el[13]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[2]], x_points_modified[nt_for_el[9]]],
+                         [y_points_modified[nt_for_el[2]], y_points_modified[nt_for_el[9]]],
+                         [z_points_modified[nt_for_el[2]], z_points_modified[nt_for_el[9]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[2]], x_points_modified[nt_for_el[10]]],
+                         [y_points_modified[nt_for_el[2]], y_points_modified[nt_for_el[10]]],
+                         [z_points_modified[nt_for_el[2]], z_points_modified[nt_for_el[10]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[2]], x_points_modified[nt_for_el[14]]],
+                         [y_points_modified[nt_for_el[2]], y_points_modified[nt_for_el[14]]],
+                         [z_points_modified[nt_for_el[2]], z_points_modified[nt_for_el[14]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[3]], x_points_modified[nt_for_el[11]]],
+                         [y_points_modified[nt_for_el[3]], y_points_modified[nt_for_el[11]]],
+                         [z_points_modified[nt_for_el[3]], z_points_modified[nt_for_el[11]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[3]], x_points_modified[nt_for_el[10]]],
+                         [y_points_modified[nt_for_el[3]], y_points_modified[nt_for_el[10]]],
+                         [z_points_modified[nt_for_el[3]], z_points_modified[nt_for_el[10]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[3]], x_points_modified[nt_for_el[15]]],
+                         [y_points_modified[nt_for_el[3]], y_points_modified[nt_for_el[15]]],
+                         [z_points_modified[nt_for_el[3]], z_points_modified[nt_for_el[15]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[4]], x_points_modified[nt_for_el[16]]],
+                         [y_points_modified[nt_for_el[4]], y_points_modified[nt_for_el[16]]],
+                         [z_points_modified[nt_for_el[4]], z_points_modified[nt_for_el[16]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[4]], x_points_modified[nt_for_el[19]]],
+                         [y_points_modified[nt_for_el[4]], y_points_modified[nt_for_el[19]]],
+                         [z_points_modified[nt_for_el[4]], z_points_modified[nt_for_el[19]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[4]], x_points_modified[nt_for_el[12]]],
+                         [y_points_modified[nt_for_el[4]], y_points_modified[nt_for_el[12]]],
+                         [z_points_modified[nt_for_el[4]], z_points_modified[nt_for_el[12]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[5]], x_points_modified[nt_for_el[16]]],
+                         [y_points_modified[nt_for_el[5]], y_points_modified[nt_for_el[16]]],
+                         [z_points_modified[nt_for_el[5]], z_points_modified[nt_for_el[16]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[5]], x_points_modified[nt_for_el[17]]],
+                         [y_points_modified[nt_for_el[5]], y_points_modified[nt_for_el[17]]],
+                         [z_points_modified[nt_for_el[5]], z_points_modified[nt_for_el[17]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[5]], x_points_modified[nt_for_el[13]]],
+                         [y_points_modified[nt_for_el[5]], y_points_modified[nt_for_el[13]]],
+                         [z_points_modified[nt_for_el[5]], z_points_modified[nt_for_el[13]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[6]], x_points_modified[nt_for_el[17]]],
+                         [y_points_modified[nt_for_el[6]], y_points_modified[nt_for_el[17]]],
+                         [z_points_modified[nt_for_el[6]], z_points_modified[nt_for_el[17]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[6]], x_points_modified[nt_for_el[18]]],
+                         [y_points_modified[nt_for_el[6]], y_points_modified[nt_for_el[18]]],
+                         [z_points_modified[nt_for_el[6]], z_points_modified[nt_for_el[18]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[6]], x_points_modified[nt_for_el[14]]],
+                         [y_points_modified[nt_for_el[6]], y_points_modified[nt_for_el[14]]],
+                         [z_points_modified[nt_for_el[6]], z_points_modified[nt_for_el[14]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[7]], x_points_modified[nt_for_el[18]]],
+                         [y_points_modified[nt_for_el[7]], y_points_modified[nt_for_el[18]]],
+                         [z_points_modified[nt_for_el[7]], z_points_modified[nt_for_el[18]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[7]], x_points_modified[nt_for_el[19]]],
+                         [y_points_modified[nt_for_el[7]], y_points_modified[nt_for_el[19]]],
+                         [z_points_modified[nt_for_el[7]], z_points_modified[nt_for_el[19]]], c='b')
+            self.ax.plot([x_points_modified[nt_for_el[7]], x_points_modified[nt_for_el[15]]],
+                         [y_points_modified[nt_for_el[7]], y_points_modified[nt_for_el[15]]],
+                         [z_points_modified[nt_for_el[7]], z_points_modified[nt_for_el[15]]], c='b')
 
         # Встановлюємо пропорції осей
         self.ax.set_box_aspect([a_val, b_val, c_val])

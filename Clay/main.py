@@ -24,7 +24,8 @@ class MyPanel(wx.Panel):
         self.nu_entry = wx.TextCtrl(self)
         self.P_entry = wx.TextCtrl(self)
 
-        # Створення кнопки "Додати"
+        self.presurre = wx.TextCtrl(self)
+
         self.all_points_button = wx.Button(self, label="Calculate")
         self.all_points_button.Bind(wx.EVT_BUTTON, self.on_all_points_button)
 
@@ -45,6 +46,9 @@ class MyPanel(wx.Panel):
         sizer.Add(wx.StaticText(self, label="C:"), 0, wx.ALL, 5)
         sizer.Add(self.c_entry, 0, wx.ALL, 5)
 
+        sizer.Add(wx.StaticText(self, label="Pressure:"), 0, wx.ALL, 5)
+        sizer.Add(self.presurre, 0, wx.ALL, 5)
+
         sizer.Add(wx.StaticText(self, label="E:"), 0, wx.ALL, 5)
         sizer.Add(self.E_entry, 0, wx.ALL, 5)
         sizer.Add(wx.StaticText(self, label="nu:"), 0, wx.ALL, 5)
@@ -53,8 +57,6 @@ class MyPanel(wx.Panel):
         sizer.Add(self.P_entry, 0, wx.ALL, 5)
 
         sizer.Add(self.all_points_button, 0, wx.ALL, 5)
-
-        self.SetSizer(sizer)
 
         self.SetSizer(sizer)
 
@@ -629,6 +631,7 @@ class MyPanel(wx.Panel):
         return result
 
     def on_all_points_button(self, event):
+        preasure = []
         elements = []
         AKT = []
         NT = []
@@ -662,7 +665,12 @@ class MyPanel(wx.Panel):
         nc_val = int(self.n_C.GetValue())
         E = float(self.E_entry.GetValue())
         nu = float(self.nu_entry.GetValue())
+        temp = self.presurre.GetValue()
+        if temp != '':
+            for i in temp.split(','):
+                preasure.append(int(i))
         P = float(self.P_entry.GetValue())
+
         # a_val = 3
         # b_val = 2
         # c_val = 3
@@ -672,16 +680,6 @@ class MyPanel(wx.Panel):
         # E = 1
         # nu = 0.3
         # P = -0.2
-
-        elements = []
-        AKT = []
-        NT = []
-        # навантаження закріплених
-        ZU = []
-        # навантажений елемент
-        ZP = []
-        DFIABG = []
-        DFIXYZ = []
         DJ = []
         liambda = E / ((1 + nu) * (1 - 2 * nu))
         mu = E / (2 * (1 + nu))
@@ -716,26 +714,27 @@ class MyPanel(wx.Panel):
                 ZU.append(i)
 
         # ОБИРАННЯ СТОРОНИ НАТИСКУ
-        for i in range(na_val * nb_val):
-            all_el = len(elements) - 1
-            ZP.append(self.ZP_Chose(elements[all_el - i], 6, 2))
-        for i in range(len(NT) - len(ZP)):
-            FE.append(np.zeros(60).tolist())
+        if len(preasure) == 0:
 
-        for i in ZP:
-            FE.append(self.FE_Calc([c_1, c_2, c_3], P, i))
+            for i in range(na_val * nb_val):
+                all_el = len(elements) - 1
+                ZP.append(self.ZP_Chose(elements[all_el - i], 6, 2))
+            for i in range(len(NT) - len(ZP)):
+                FE.append(np.zeros(60).tolist())
 
-        # preasure = [13]
-        # for i in preasure:
-        #    ZP.append(self.ZP_Chose(elements[i], 6, 2))
-        #
-        # zp_index = 0
-        # for i in range(len(elements)):
-        #    if i in preasure:
-        #        FE.append(self.FE_Calc([c_1, c_2, c_3], P, ZP[zp_index]))
-        #        zp_index += 1
-        #    else:
-        #        FE.append(np.zeros(60).tolist())
+            for i in ZP:
+                FE.append(self.FE_Calc([c_1, c_2, c_3], P, i))
+        else:
+            for i in preasure:
+                ZP.append(self.ZP_Chose(elements[i], 6, 2))
+
+            zp_index = 0
+            for i in range(len(elements)):
+                if i in preasure:
+                    FE.append(self.FE_Calc([c_1, c_2, c_3], P, ZP[zp_index]))
+                    zp_index += 1
+                else:
+                    FE.append(np.zeros(60).tolist())
 
         MG = self.MG_Create(list_of_MGE, len(AKT), NT, ZU)
 
@@ -940,7 +939,7 @@ class MyPanel(wx.Panel):
 
         # Оновлення відображення графіку
         plt.show()
-        a = 0
+        preasure = []
 
 
 class MainFrame(wx.Frame):

@@ -46,7 +46,7 @@ class MyPanel(wx.Panel):
         sizer.Add(wx.StaticText(self, label="C:"), 0, wx.ALL, 5)
         sizer.Add(self.c_entry, 0, wx.ALL, 5)
 
-        sizer.Add(wx.StaticText(self, label="Pressure:"), 0, wx.ALL, 5)
+        sizer.Add(wx.StaticText(self, label="Side for pressure:"), 0, wx.ALL, 5)
         sizer.Add(self.presurre, 0, wx.ALL, 5)
 
         sizer.Add(wx.StaticText(self, label="E:"), 0, wx.ALL, 5)
@@ -565,7 +565,7 @@ class MyPanel(wx.Panel):
 
         return Fe
 
-    def MG_Create(self, All_MGE, AKT_RANGE, All_NT, ZU_cast):
+    def MG_Create(self, All_MGE, AKT_RANGE, All_NT, ZU_cast,AKT_cast):
         big_matrix = np.zeros((3 * AKT_RANGE, 3 * AKT_RANGE))
         result = big_matrix.tolist()
 
@@ -599,7 +599,7 @@ class MyPanel(wx.Panel):
                     result[index_j_for_MG][index_i_for_MG] += mge[j][i]
 
         for i in ZU_cast:
-            index_of_point = ZU_cast.index(i)
+            index_of_point = AKT_cast.index(i)
             ix = 3 * index_of_point + 0
             iy = 3 * index_of_point + 1
             iz = 3 * index_of_point + 2
@@ -632,16 +632,8 @@ class MyPanel(wx.Panel):
 
     def on_all_points_button(self, event):
         preasure = []
-        elements = []
-        AKT = []
-        NT = []
         # навантаження закріплених
-        ZU = []
         # навантажений елемент
-        ZP = []
-        DFIABG = []
-        DFIXYZ = []
-        DJ = []
         FE = []
         F = []
         MG = []
@@ -668,7 +660,7 @@ class MyPanel(wx.Panel):
         temp = self.presurre.GetValue()
         if temp != '':
             for i in temp.split(','):
-                preasure.append(int(i))
+                preasure.append(int(i) - 1)
         P = float(self.P_entry.GetValue())
 
         # a_val = 3
@@ -712,7 +704,11 @@ class MyPanel(wx.Panel):
         for i in AKT:
             if i[2] == 0:
                 ZU.append(i)
-
+        #ZU.append(AKT[0])
+        #ZU.append(AKT[1])
+        #ZU.append(AKT[2])
+        #ZU.append(AKT[7])
+        #ZU.append(AKT[11])
         # ОБИРАННЯ СТОРОНИ НАТИСКУ
         if len(preasure) == 0:
 
@@ -736,7 +732,17 @@ class MyPanel(wx.Panel):
                 else:
                     FE.append(np.zeros(60).tolist())
 
-        MG = self.MG_Create(list_of_MGE, len(AKT), NT, ZU)
+        MG = self.MG_Create(list_of_MGE, len(AKT), NT, ZU,AKT)
+
+        #MG[0][0] = 100000000
+        #MG[1][1] = 100000000
+        #MG[2][2] = 100000000
+        #MG[3][3] = 100000000
+        #MG[4][4] = 100000000
+        #MG[5][5] = 100000000
+        #MG[21][21] = 100000000
+        #MG[22][22] = 100000000
+        #MG[23][23] = 100000000
 
         F = self.F_Create(FE, len(AKT), NT)
         result_points = self.solve_linear_equation(MG, F)
